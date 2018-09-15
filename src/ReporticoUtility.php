@@ -240,7 +240,7 @@ class ReporticoUtility
     {
         $newpath = $path;
         $reltoinclude;
-        if (substr($newpath, 0, 1) == "/" || substr($newpath, 0, 1) == "\\") {
+        if (substr($newpath, 0, 1) == "/" || substr($newpath, 0, 1) == "\\" || preg_match("/^[A-Za-z]:/", $newpath)) {
             if (is_file($newpath) || is_dir($newpath)) {
                 return $newpath;
             } else {
@@ -289,6 +289,8 @@ class ReporticoUtility
     // This can be used to then find reportico images, links, runners etc
     static function getReporticoUrlPath()
     {
+        $sessionClass = ReporticoSession();
+
         //$found = ReporticoUtility::findFileToInclude($newpath, $newpath, $reltoinclude);
         $newpath = __DIR__;
         $newpath = ReporticoUtility::getRelativePath(str_replace("/", "\\", realpath($newpath)), dirname(realpath($_SERVER["SCRIPT_FILENAME"])));
@@ -297,7 +299,7 @@ class ReporticoUtility
             $above = "";
         }
 
-        $url_path = $above . "/" . (ReporticoSession())::sessionRequestItem('reporticourl', dirname($newpath));
+        $url_path = $above . "/" . $sessionClass::sessionRequestItem('reporticourl', dirname($newpath));
 
         // If reportico source files are installed in root directory or in some other
         // scenarios such as an invalid linkbaseurl parameter the dirname of the
